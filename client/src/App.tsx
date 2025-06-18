@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthPage } from './components/Auth/AuthPage';
 import { Home } from './pages/Home';
-import { ProtectedRoute } from './components/ProtectedRoute';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import Profile from '@/pages/Profile';
 import '@ant-design/v5-patch-for-react-19';
 import 'antd/dist/reset.css';
 import './App.css';
@@ -20,6 +21,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
