@@ -9,6 +9,8 @@ require('dotenv').config();
 const connectDB = require('./config/db');
 
 const usersRouter = require('./routes/users');
+const contactsRouter = require('./routes/contacts');
+const groupsRouter = require('./routes/groups');
 
 const app = express();
 
@@ -60,6 +62,8 @@ app.use(cors());
 
 // Routes
 app.use('/users', usersRouter);
+app.use('/contacts', contactsRouter);
+app.use('/groups', groupsRouter);
 
 // Error handling
 app.use(function(req, res, next) {

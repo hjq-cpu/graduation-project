@@ -130,7 +130,135 @@ const login = async (req, res) => {
   }
 };
 
+// 获取用户信息
+const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    const user = await User.findById(userId).select('-password');
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: '用户不存在'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        id: user._id,
+        email: user.email,
+        nickname: user.nickname,
+        avatar: user.avatar,
+        signature: user.signature,
+        status: user.status,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      }
+    });
+  } catch (error) {
+    console.error('获取用户信息错误:', error);
+    res.status(500).json({
+      success: false,
+      message: '获取用户信息失败'
+    });
+  }
+};
+
+// 更新用户信息
+const updateUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { nickname, signature, status } = req.body;
+
+    const updateData = {};
+    if (nickname !== undefined) updateData.nickname = nickname;
+    if (signature !== undefined) updateData.signature = signature;
+    if (status !== undefined) updateData.status = status;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: '用户不存在'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: '用户信息更新成功',
+      data: {
+        id: user._id,
+        email: user.email,
+        nickname: user.nickname,
+        avatar: user.avatar,
+        signature: user.signature,
+        status: user.status,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      }
+    });
+  } catch (error) {
+    console.error('更新用户信息错误:', error);
+    res.status(500).json({
+      success: false,
+      message: '更新用户信息失败'
+    });
+  }
+};
+
+// 获取所有用户列表（用于搜索和邀请）
+const getAllUsers = async (req, res) => {
+  try {
+    const { search } = req.query;
+    const currentUserId = req.user.userId;
+
+    let query = { _id: { $ne: currentUserId } };
+    
+    if (search) {
+      query.$or = [
+        { email: { $regex: search, $options: 'i' } },
+        { nickname: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const users = await User.find(query)
+      .select('email nickname avatar signature status createdAt')
+      .limit(20);
+
+    const userList = users.map(user => ({
+      id: user._id,
+      email: user.email,
+      username: user.nickname || user.email.split('@')[0],
+      avatar: user.avatar,
+      signature: user.signature,
+      status: user.status,
+      online: user.status === 'online',
+      createdAt: user.createdAt
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: userList
+    });
+  } catch (error) {
+    console.error('获取用户列表错误:', error);
+    res.status(500).json({
+      success: false,
+      message: '获取用户列表失败'
+    });
+  }
+};
+
 module.exports = {
   register,
-  login
+  login,
+  getUserProfile,
+  updateUserProfile,
+  getAllUsers
 }; 

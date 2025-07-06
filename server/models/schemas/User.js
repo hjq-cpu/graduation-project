@@ -24,6 +24,12 @@ const userSchema = new mongoose.Schema({
     trim: true,
     default: ''
   },
+  signature: {
+    type: String,
+    trim: true,
+    maxlength: 100,
+    default: ''
+  },
   status: {
     type: String,
     enum: ['online', 'offline', 'away', 'busy'],
