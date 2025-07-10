@@ -45,13 +45,11 @@ export interface RegisterFormData extends LoginFormData {
 export interface AuthResponse {
   success: boolean;
   message: string;
-  data: {
-    token: string;
-    user: {
-      id: string;
-      email: string;
-      nickname: string;
-      avatar: string;
-    };
-  };
+  token: string;
+  user:{
+    avatar:string;
+    email:string;
+    id:string;
+    nickname:string;
+  }
 } 
