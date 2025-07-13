@@ -14,7 +14,7 @@ export const LoginForm: React.FC = () => {
     try {
       setLoading(true);
       const response = await authService.login(values);
-      localStorage.setItem('token', response.token);
+      localStorage.setItem('token', response.data.token);
       message.success('登录成功！');
       
       const from = (location.state as any)?.from?.pathname || '/';

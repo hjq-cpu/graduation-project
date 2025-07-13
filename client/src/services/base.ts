@@ -19,9 +19,6 @@ request.interceptors.request.use(
             config.headers['Authorization'] = `Bearer ${token.trim()}`;
         }
         
-        console.log('Request config after headers:', config);
-        console.log('Request headers:', config.headers);
-        
         return config;
     },
     (error) => {

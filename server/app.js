@@ -11,6 +11,7 @@ const connectDB = require('./config/db');
 const usersRouter = require('./routes/users');
 const contactsRouter = require('./routes/contacts');
 const groupsRouter = require('./routes/groups');
+const messagesRouter = require('./routes/messages');
 
 const app = express();
 
@@ -64,6 +65,7 @@ app.use(cors());
 app.use('/users', usersRouter);
 app.use('/contacts', contactsRouter);
 app.use('/groups', groupsRouter);
+app.use('/messages', messagesRouter);
 
 // Error handling
 app.use(function(req, res, next) {
