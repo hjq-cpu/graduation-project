@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= collectionName %> - MongoDB 数据查看器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+        }
+        
+        .breadcrumb {
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .pagination a {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        
+        .pagination a:hover {
+            background: #e9ecef;
+        }
+        
+        .pagination .current {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .document {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .document-header {
+            background: #e9ecef;
+            padding: 10px 15px;
+            font-weight: bold;
+            color: #495057;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .document-content {
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .stats {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stats h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        
+        .stats p {
+            color: #155724;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="breadcrumb">
+                <a href="/">🏠 首页</a> > 
+                <a href="/database/<%= dbName %>">📁 <%= dbName %></a> > 
+                <span>集合: <%= collectionName %></span>
+            </div>
+            <h1>📄 <%= collectionName %></h1>
+        </div>
+        
+        <div class="content">
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="history.back()">← 返回</button>
+                <div>
+                    <span>每页显示: </span>
+                    <select onchange="changeLimit(this.value)">
+                        <option value="10" <%= pagination.limit === 10 ? 'selected' : '' %>>10</option>
+                        <option value="20" <%= pagination.limit === 20 ? 'selected' : '' %>>20</option>
+                        <option value="50" <%= pagination.limit === 50 ? 'selected' : '' %>>50</option>
+                        <option value="100" <%= pagination.limit === 100 ? 'selected' : '' %>>100</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <h3>📊 统计信息</h3>
+                <p>总文档数: <strong><%= pagination.total %></strong></p>
+                <p>当前页: <strong><%= pagination.currentPage %> / <%= pagination.totalPages %></strong></p>
+                <p>每页显示: <strong><%= pagination.limit %></strong> 条记录</p>
+            </div>
+            
+            <% if (documents && documents.length > 0) { %>
+                <% documents.forEach((doc, index) => { %>
+                    <div class="document">
+                        <div class="document-header">
+                            文档 #<%= (pagination.currentPage - 1) * pagination.limit + index + 1 %>
+                            <% if (doc._id) { %>
+                                (ID: <%= doc._id %>)
+                            <% } %>
+                        </div>
+                        <div class="document-content"><%= JSON.stringify(doc, null, 2) %></div>
+                    </div>
+                <% }); %>
+                
+                <% if (pagination.totalPages > 1) { %>
+                    <div class="pagination">
+                        <% if (pagination.hasPrev) { %>
+                            <a href="?page=<%= pagination.currentPage - 1 %>&limit=<%= pagination.limit %>">« 上一页</a>
+                        <% } %>
+                        
+                        <% for (let i = Math.max(1, pagination.currentPage - 2); i <= Math.min(pagination.totalPages, pagination.currentPage + 2); i++) { %>
+                            <% if (i === pagination.currentPage) { %>
+                                <span class="current"><%= i %></span>
+                            <% } else { %>
+                                <a href="?page=<%= i %>&limit=<%= pagination.limit %>"><%= i %></a>
+                            <% } %>
+                        <% } %>
+                        
+                        <% if (pagination.hasNext) { %>
+                            <a href="?page=<%= pagination.currentPage + 1 %>&limit=<%= pagination.limit %>">下一页 »</a>
+                        <% } %>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <div style="text-align: center; padding: 40px; color: #6c757d;">
+                    <h3>📭 没有找到文档</h3>
+                    <p>此集合中没有文档</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+    
+    <script>
+        function changeLimit(limit) {
+            const url = new URL(window.location);
+            url.searchParams.set('limit', limit);
+            url.searchParams.set('page', '1');
+            window.location.href = url.toString();
+        }
+    </script>
+</body>
+</html>

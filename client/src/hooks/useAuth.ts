@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User } from '../types/auth';
 import axios from 'axios';
+import { getValidToken } from '../utils/tokenUtils';
 
 interface UseAuthReturn {
   user: User | null;
@@ -17,7 +18,7 @@ export const useAuth = (): UseAuthReturn => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = getValidToken();
         if (!token) {
           setLoading(false);
           return;
@@ -39,7 +40,7 @@ export const useAuth = (): UseAuthReturn => {
 
   const updateUser = async (updates: Partial<User>) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = getValidToken();
       if (!token) throw new Error('未登录');
 
       const response = await axios.patch('/api/users/me', updates, {

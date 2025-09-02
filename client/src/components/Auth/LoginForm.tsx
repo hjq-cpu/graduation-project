@@ -4,7 +4,9 @@ import { Form, Input, Button, Card, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { authService } from '../../services/auth';
 import { LoginFormData } from '../../types/auth';
-
+message.config({
+  top: 100,
+});
 export const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,7 +18,7 @@ export const LoginForm: React.FC = () => {
       const response = await authService.login(values);
       localStorage.setItem('token', response.data.token);
       message.success('登录成功！');
-      
+
       const from = (location.state as any)?.from?.pathname || '/';
       navigate(from, { replace: true });
     } catch (err) {
@@ -27,15 +29,15 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center', 
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
       justifyContent: 'center',
       background: '#f0f2f5'
     }}>
-      <Card 
-        title="用户登录" 
+      <Card
+        title="用户登录"
         style={{ width: 400 }}
         styles={{ header: { textAlign: 'center', fontSize: '24px' } }}
       >
@@ -52,9 +54,9 @@ export const LoginForm: React.FC = () => {
               { type: 'email', message: '请输入有效的邮箱地址' }
             ]}
           >
-            <Input 
-              prefix={<UserOutlined />} 
-              placeholder="邮箱地址" 
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="邮箱地址"
               size="large"
             />
           </Form.Item>
@@ -74,9 +76,9 @@ export const LoginForm: React.FC = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button 
-              type="primary" 
-              htmlType="submit" 
+            <Button
+              type="primary"
+              htmlType="submit"
               loading={loading}
               block
               size="large"

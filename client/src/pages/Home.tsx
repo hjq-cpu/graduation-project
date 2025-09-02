@@ -13,7 +13,6 @@ import {
 } from '@ant-design/icons';
 import { authService } from '../services/auth';
 import { User } from '../types/auth';
-
 const { Header, Sider, Content } = Layout;
 
 export const Home: React.FC = () => {
@@ -39,6 +38,7 @@ export const Home: React.FC = () => {
       }
     } catch (error) {
       console.error('加载用户信息失败', error);
+      // 不要在这里清除token，让响应拦截器处理
     } finally {
       setLoading(false);
     }

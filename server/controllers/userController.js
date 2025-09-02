@@ -12,6 +12,11 @@ const getJwtSecret = () => {
   return secret;
 };
 
+// 确保JWT密钥一致性
+const JWT_SECRET = getJwtSecret();
+console.log('=== 用户控制器JWT密钥初始化 ===');
+console.log('使用的JWT密钥:', JWT_SECRET);
+
 // 用户注册
 const register = async (req, res) => {
   try {
@@ -43,7 +48,7 @@ const register = async (req, res) => {
     // 生成 JWT token
     const token = jwt.sign(
       { userId: user._id },
-      getJwtSecret(),
+      JWT_SECRET,
       { expiresIn: '7d' }
     );
 
@@ -102,11 +107,17 @@ const login = async (req, res) => {
     }
 
     // 生成 JWT token
+    // console.log('=== 登录时JWT生成调试 ===');
+    // console.log('用户ID:', user._id);
+    // console.log('JWT密钥:', JWT_SECRET);
+    
     const token = jwt.sign(
       { userId: user._id },
-      getJwtSecret(),
+      JWT_SECRET,
       { expiresIn: '7d' }
     );
+    
+    // console.log('生成的token:', token);
 
     res.status(200).json({
       success: true,

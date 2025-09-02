@@ -4,38 +4,39 @@ const { Contact, User } = require('../models');
 const sendFriendRequest = async (req, res) => {
   try {
     const requesterId = req.user.userId;
-    const { recipientId, requestMessage } = req.body;
-
+    const { email, requestMessage } = req.body;
+    console.log(email, requestMessage);
+    
     // 验证参数
-    if (!recipientId) {
+    if (!email) {
       return res.status(400).json({
         success: false,
-        message: '接收者ID不能为空'
+        message: '接收者邮箱不能为空'
       });
     }
-
-    // 检查是否给自己发送请求
-    if (requesterId === recipientId) {
-      return res.status(400).json({
-        success: false,
-        message: '不能给自己发送好友请求'
-      });
-    }
-
+    
     // 检查接收者是否存在
-    const recipient = await User.findById(recipientId);
+    const recipient = await User.findOne({ email: email });
     if (!recipient) {
       return res.status(404).json({
         success: false,
         message: '接收者不存在'
       });
     }
+    
+    // 检查是否给自己发送请求
+    if (requesterId === recipient._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: '不能给自己发送好友请求'
+      });
+    }
 
     // 检查是否已经存在好友关系
     const existingContact = await Contact.findOne({
       $or: [
-        { requester: requesterId, recipient: recipientId },
-        { requester: recipientId, recipient: requesterId }
+        { requester: requesterId, recipient: recipient._id },
+        { requester: recipient._id, recipient: requesterId }
       ]
     });
 
@@ -66,7 +67,7 @@ const sendFriendRequest = async (req, res) => {
     // 创建新的好友请求
     const contact = new Contact({
       requester: requesterId,
-      recipient: recipientId,
+      recipient: recipient._id,
       requestMessage: requestMessage || ''
     });
 
@@ -259,7 +260,7 @@ const getPendingRequests = async (req, res) => {
     const requests = pendingRequests.map(contact => ({
       id: contact._id,
       requesterId: contact.requester._id,
-      requesterNickname: contact.requester.nickname,
+      requesterNickname: contact.requester.nickname || contact.requester.email,
       requesterAvatar: contact.requester.avatar,
       requesterEmail: contact.requester.email,
       requestMessage: contact.requestMessage,
