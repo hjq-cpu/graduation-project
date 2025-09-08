@@ -3,6 +3,7 @@
 ## 技术架构详细图
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'secondaryColor': '#ffffff', 'tertiaryColor': '#ffffff'}}}%%
 graph TB
     subgraph "前端技术栈 (Frontend Stack)"
         React[React + TypeScript]
@@ -62,21 +63,12 @@ graph TB
 
     REST --> Mongoose
     SocketServer --> Mongoose
-
-    classDef frontend fill:#e3f2fd
-    classDef backend fill:#f3e5f5
-    classDef database fill:#e8f5e8
-    classDef communication fill:#fff3e0
-
-    class React,Tailwind,AntDesign,SocketClient,HTTPClient frontend
-    class NodeJS,Express,SocketServer,JWT,Bcrypt backend
-    class MongoDB,Mongoose,Users,Contacts,Messages,Groups database
-    class WebSocket,HTTP,REST communication
 ```
 
 ## 系统功能模块图
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'secondaryColor': '#ffffff', 'tertiaryColor': '#ffffff'}}}%%
 graph LR
     subgraph "用户管理模块"
         Auth[用户认证]
@@ -119,20 +111,12 @@ graph LR
     FriendList --> CreateGroup
     GroupMember --> GroupChat
 
-    classDef userModule fill:#e1f5fe
-    classDef friendModule fill:#f3e5f5
-    classDef chatModule fill:#e8f5e8
-    classDef groupModule fill:#fff3e0
-
-    class Auth,Profile,Status userModule
-    class AddFriend,FriendList,FriendStatus friendModule
-    class PrivateChat,GroupChat,MessageHistory chatModule
-    class CreateGroup,GroupMember,GroupPermission groupModule
 ```
 
 ## 数据流程图
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'secondaryColor': '#ffffff', 'tertiaryColor': '#ffffff'}}}%%
 flowchart TD
     A[用户登录] --> B{验证用户}
     B -->|成功| C[建立WebSocket连接]
@@ -159,20 +143,12 @@ flowchart TD
     J --> Q
     P --> Q
     
-    classDef start fill:#e8f5e8
-    classDef process fill:#e3f2fd
-    classDef decision fill:#fff3e0
-    classDef end fill:#fce4ec
-    
-    class A start
-    class C,E,F,G,H,I,J,K,M,N,O,P,Q process
-    class B,L decision
-    class D end
 ```
 
 ## 系统部署架构图
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'secondaryColor': '#ffffff', 'tertiaryColor': '#ffffff'}}}%%
 graph TB
     subgraph "客户端 (Client)"
         WebApp[Web应用]
@@ -224,24 +200,12 @@ graph TB
     App2 --> FileServer
     App3 --> FileServer
 
-    classDef client fill:#e1f5fe
-    classDef loadBalancer fill:#f3e5f5
-    classDef appServer fill:#e8f5e8
-    classDef database fill:#fff3e0
-    classDef cache fill:#fce4ec
-    classDef storage fill:#f1f8e9
-
-    class WebApp,MobileApp client
-    class Nginx loadBalancer
-    class App1,App2,App3 appServer
-    class Mongo1,Mongo2,Mongo3 database
-    class Redis cache
-    class FileServer storage
 ```
 
 ## 安全架构图
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'secondaryColor': '#ffffff', 'tertiaryColor': '#ffffff'}}}%%
 graph TB
     subgraph "客户端安全"
         HTTPS[HTTPS加密]
@@ -279,13 +243,4 @@ graph TB
     PasswordHash --> Backup
     CORS --> AccessControl
 
-    classDef clientSecurity fill:#e1f5fe
-    classDef transportSecurity fill:#f3e5f5
-    classDef appSecurity fill:#e8f5e8
-    classDef dataSecurity fill:#fff3e0
-
-    class HTTPS,TokenStorage,InputValidation clientSecurity
-    class SSL,WebSocketSecure transportSecurity
-    class JWT,PasswordHash,RateLimit,CORS appSecurity
-    class DataEncryption,Backup,AccessControl dataSecurity
 ```
